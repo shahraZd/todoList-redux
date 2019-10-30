@@ -9,30 +9,31 @@ class Add extends Component {
     };
   }
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
       newToDo: e.target.value,
     });
   };
   handleClick = () => {
-    this.props.addList(this.state.newToDo);
+    this.state.newToDo !== "" && this.props.addList(this.state.newToDo);
     this.setState({
-        newToDo: "",
-      });
+      newToDo: "",
+    });
   };
 
   render() {
     return (
-      <div>
-        <button color="primary" onClick={this.handleClick}>
+      <header>
+        <button className="btn btn-success" onClick={this.handleClick}>
           +
         </button>
         <input
           type="text"
           value={this.state.newToDo}
           onChange={this.handleChange}
+          placeholder="what you're gonna do?"
         />
-      </div>
+      </header>
     );
   }
 }

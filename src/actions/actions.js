@@ -1,4 +1,4 @@
-import {ADD_LIST, REMOVE_LIST, EDIT_LIST} from '../contants/actionType'
+import {ADD_LIST, REMOVE_LIST, EDIT_LIST,CHECK_LIST} from '../contants/actionType'
 
 export const addList=(payload)=>{
 
@@ -13,4 +13,7 @@ export const removeList=(payload)=>{
 
 export const editList=(payload,index)=>{
     return {type:EDIT_LIST, index,payload}
+}
+export const checkList=(index)=>{
+    return {type:CHECK_LIST, index}
 }

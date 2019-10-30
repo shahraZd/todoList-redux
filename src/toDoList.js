@@ -1,82 +1,55 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addList, removeList, editList } from "./actions/actions";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-class ModalToDo extends React.Component {
-  render() {
-    return (
-      <Modal
-        isOpen={this.props.isOpen}
-        toggle={this.props.toggle}
-        className={this.props.className}
-      >
-        <ModalHeader>{this.props.modalTitle}</ModalHeader>
-        <ModalBody>
-          <textarea
-            onChange={this.props.onchange}
-            placeholder="type here"
-            defaultValue={this.props.defaultVal}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.props.onclick}>
-            Confirm
-          </Button>
-          <Button color="secondary" onClick={this.props.cancel}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
-    );
-  }
-}
+import { removeList, editList, checkList } from "./actions/actions";
+
 class ToDoList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      modalEdit: false,
-    };
+    this.state = {};
   }
-
-  toggleEdit = (e, i) => {
-    this.setState({
-      modalEdit: !this.state.modalEdit,
-      defaultVal: e,
-      index: i,
-    });
-  };
 
   render() {
     return (
-      <div className="container">
+      <ul class="list-group justify-content-center align-items-center ">
         {this.props.toDoList.map((el, i) => (
-          <div>
-            <span onClick={() => this.toggleEdit(el, i)}>
-              {el}
-              <button color="danger" onClick={() => this.props.editList(i)}>
-                edit
-              </button>
-              <button color="danger" onClick={() => this.props.removeList(i)}>
-                delete
-              </button>
-            </span>
-          </div>
-        ))}
+          <li className= {el.checked? "list-group-item w-100 text-center checked":"list-group-item w-100 text-center"}>
+            <form className="d-flex justify-content-center align-items-center">
+              <div class="form-group form-check text-center v-align-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                
+                  onClick={() => this.props.checkList(i)}
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  value={el.todo}
+                  readOnly
+                  onClick={e => {
+                    e.target.readOnly = false;
+                    console.log(e.target.readOnly);
+                  }}
+                  onBlur={e => {
+                    e.target.readOnly = true;
+                    console.log(e.target.readOnly);
+                  }}
+                  onChange={e => this.props.editList(e.target.value, i)}
+                />
+              </div>
 
-        <ModalToDo
-          isOpen={this.state.modalEdit}
-          toggle={this.toggleEdit}
-          className={this.props.className}
-          modalTitle={"Edit To Do"}
-          onclick={() => {
-            this.props.editList(this.state.newToDo, this.state.index);
-            this.toggleEdit();
-          }}
-          cancel={this.toggleEdit}
-          onchange={event => this.getList(event)}
-          defaultVal={this.state.defaultVal}
-        />
-      </div>
+              <button
+                class="btn btn-danger"
+                onClick={(e) =>{e.preventDefault(); this.props.removeList(i)}}
+              >
+                X
+              </button>
+            </form>
+          </li>
+        ))}
+      </ul>
     );
   }
 }
@@ -87,21 +60,19 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    addList: payload => {
-      dispatch(addList(payload));
-    },
     removeList: payload => {
       dispatch(removeList(payload));
     },
     editList: (payload, index) => {
       dispatch(editList(payload, index));
     },
+    checkList: (payload, index) => {
+      dispatch(checkList(payload, index));
+    },
   };
 };
 
-const ConnectedToDoList = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ToDoList);
-
-export default ConnectedToDoList;
